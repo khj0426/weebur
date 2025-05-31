@@ -1,3 +1,5 @@
+"use client";
+
 import "@radix-ui/themes/styles.css";
 import { ReactNode } from "react";
 import { Theme } from "@radix-ui/themes";
