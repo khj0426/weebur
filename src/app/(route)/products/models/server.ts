@@ -48,3 +48,5 @@ interface Product {
 
 export type ProductListResponse = DataWithPagination<Array<Product>>;
 export type ProductItem = Product;
+
+export const DEFAULT_PRODUCT_PAGINATION_SIZE = 20;
