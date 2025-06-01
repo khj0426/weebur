@@ -1,13 +1,14 @@
 "use client";
 import { Button, Flex, Select, Text } from "@radix-ui/themes";
-import { Control, Controller, useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
   createNewProductSchema,
   CreateNewProductSchema,
   ProductBrandList,
 } from "./models/client";
-import { Input } from "@/app/components/ui/Input";
+
+import { useWatch } from "react-hook-form";
 import { Spacing } from "@/app/components/ui/Spacing";
 
 import { FileTextIcon, ReaderIcon, InputIcon } from "@radix-ui/react-icons";
@@ -17,7 +18,6 @@ export default function CreateNewProductPage() {
   const {
     control,
     handleSubmit,
-    watch,
     formState: { errors },
   } = useForm<CreateNewProductSchema>({
     resolver: zodResolver(createNewProductSchema),
@@ -29,10 +29,21 @@ export default function CreateNewProductPage() {
       brand: "Samsung",
     },
   });
-  console.log(watch());
 
-  console.log("Form errors:", errors);
+  const watchPrice = useWatch({
+    control,
+    name: "price",
+  });
 
+  const watchDiscountPerncetage = useWatch({
+    control,
+    name: "discountPercentage",
+  });
+
+  const discountedPrice =
+    watchPrice && watchDiscountPerncetage
+      ? Math.round(watchPrice * (1 - watchDiscountPerncetage / 100))
+      : watchPrice;
   const onSubmit = (data: CreateNewProductSchema) => {
     console.log("Submitted data:", data);
   };
@@ -84,6 +95,7 @@ export default function CreateNewProductPage() {
           leftAddon={<InputIcon />}
         />
 
+        <Text>최종 가격은 {discountedPrice}원 입니다.</Text>
         <Controller
           control={control}
           name="brand"

@@ -30,3 +30,54 @@ useSuspenseQuery 등 suspense와 에러처리를 동시에 하기 위해 `AsyncB
 react-hook-form에서는 register를 사용하려면 ref를 등록해야 합니다. 하지만 radix-ui의 TextField에는 ref를 주입할 수 없었고, 유효성 검사를 통과해도 오류가 발생했습니다. (invalid-type)
 
 따라서 Controller를 사용하는 방식으로 수정해주었습니다.
+
+Number타입을 제대로 추론하기 위해, 다음과 같이 오직 숫자만 받는 로직을 하나의 유틸로 분리하고,
+
+```ts
+export function allowOnlyNumber(value: string) {
+  return parseInt(value.replace(/[^0-9]/g, ""));
+}
+```
+
+Controller를 매번 쓰는 것의 반복을 줄이기 위해 커스텀한 컴포넌트를 만들고, 해당 로직을 사용하게 해주었습니다.
+
+```tsx
+export function ControllerWithInput({
+  control,
+  name,
+  leftAddon,
+  type,
+  label,
+  placeholder,
+  error,
+}: Props) {
+  return (
+    <Controller
+      control={control}
+      name={name}
+      render={({ field }) => (
+        <div>
+          <Text size={"2"}>{label}</Text>
+          <Input
+            size={"3"}
+            leftAddon={leftAddon}
+            type={type}
+            aria-label={name}
+            placeholder={placeholder}
+            {...field}
+            onChange={(e) => {
+              if (type === "number") {
+                field.onChange(allowOnlyNumber(e.target.value));
+              } else {
+                field.onChange(e);
+              }
+            }}
+            bottomText={error}
+            error={Boolean(error)}
+          />
+        </div>
+      )}
+    />
+  );
+}
+```
