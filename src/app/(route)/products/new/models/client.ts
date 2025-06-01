@@ -3,7 +3,7 @@ import { z } from "zod";
 export const createNewProductSchema = z.object({
   title: z
     .string({
-      message: "제목을 입력해주세요.",
+      message: "상품명을 입력해주세요.",
     })
     .min(1, {
       message: "최소 1자 이상 입력해주세요.",
@@ -31,3 +31,18 @@ export const createNewProductSchema = z.object({
 });
 
 export type CreateNewProductSchema = z.infer<typeof createNewProductSchema>;
+
+export const ProductBrandList = [
+  {
+    key: "삼성",
+    value: "Samsung",
+  },
+  {
+    key: "애플",
+    value: "Apple",
+  },
+  {
+    key: "위버",
+    value: "Weebur",
+  },
+] as const;
