@@ -12,6 +12,7 @@ interface Props {
   type?: "text" | "number";
   error?: string;
   label?: string;
+  disabled?: boolean;
 }
 export function ControllerWithInput({
   control,
@@ -19,6 +20,7 @@ export function ControllerWithInput({
   leftAddon,
   type,
   label,
+  disabled,
   placeholder,
   error,
 }: Props) {
@@ -31,6 +33,8 @@ export function ControllerWithInput({
           <Text size={"2"}>{label}</Text>
           <Input
             size={"3"}
+            disabled={disabled}
+            aria-disabled={disabled}
             leftAddon={leftAddon}
             type={type}
             aria-label={name}

@@ -8,11 +8,14 @@ import {
   ProductBrandList,
 } from "./models/client";
 
+import { useRouter } from "next/navigation";
 import { useWatch } from "react-hook-form";
 import { Spacing } from "@/app/components/ui/Spacing";
 
 import { FileTextIcon, ReaderIcon, InputIcon } from "@radix-ui/react-icons";
 import { ControllerWithInput } from "./components/create-new-product-control-input";
+import { SwitchCase } from "@/app/components/switch-case";
+import { useCreateNewProduct } from "./hooks/use-create-new-product";
 
 export default function CreateNewProductPage() {
   const {
@@ -30,6 +33,10 @@ export default function CreateNewProductPage() {
     },
   });
 
+  const router = useRouter();
+
+  const { mutate: createNewProduct } = useCreateNewProduct();
+
   const watchPrice = useWatch({
     control,
     name: "price",
@@ -44,8 +51,17 @@ export default function CreateNewProductPage() {
     watchPrice && watchDiscountPerncetage
       ? Math.round(watchPrice * (1 - watchDiscountPerncetage / 100))
       : watchPrice;
+
   const onSubmit = (data: CreateNewProductSchema) => {
-    console.log("Submitted data:", data);
+    createNewProduct(data, {
+      onSuccess: () => {
+        alert("상품 정보가 성공적으로 저장되었습니다.");
+        router.push("/products");
+      },
+      onError: (error) => {
+        alert(error.message);
+      },
+    });
   };
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
@@ -90,12 +106,23 @@ export default function CreateNewProductPage() {
           type="number"
           label="상품 할인율"
           name="discountPercentage"
+          disabled={watchPrice < 1}
           error={errors?.discountPercentage?.message}
           placeholder="상품 할인율을 입력해주세요."
           leftAddon={<InputIcon />}
         />
+        <SwitchCase
+          value={isNaN(discountedPrice) ? "할인_적용_안됨" : "할인_적용"}
+          caseBy={{
+            할인_적용_안됨: null,
+            할인_적용: (
+              <Text color="gray">
+                할인율을 적용한 최종 가격은 {discountedPrice}원 입니다.
+              </Text>
+            ),
+          }}
+        />
 
-        <Text>최종 가격은 {discountedPrice}원 입니다.</Text>
         <Controller
           control={control}
           name="brand"
