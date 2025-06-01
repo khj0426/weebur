@@ -24,3 +24,9 @@
 컴포넌트의 분기처리는 `Switcase`컴포넌트를 사용합니다.
 
 useSuspenseQuery 등 suspense와 에러처리를 동시에 하기 위해 `AsyncBoundary`컴포넌트를 사용합니다.
+
+#### radix-ui의 TextField와 react-hook-form사용시 발생한 문제점
+
+react-hook-form에서는 register를 사용하려면 ref를 등록해야 합니다. 하지만 radix-ui의 TextField에는 ref를 주입할 수 없었고, 유효성 검사를 통과해도 오류가 발생했습니다. (invalid-type)
+
+따라서 Controller를 사용하는 방식으로 수정해주었습니다.

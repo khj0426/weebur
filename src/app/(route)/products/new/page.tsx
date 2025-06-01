@@ -1,6 +1,6 @@
 "use client";
-import { Button, Flex, Select } from "@radix-ui/themes";
-import { Controller, useForm } from "react-hook-form";
+import { Button, Flex, Select, Text } from "@radix-ui/themes";
+import { Control, Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
   createNewProductSchema,
@@ -10,23 +10,28 @@ import {
 import { Input } from "@/app/components/ui/Input";
 import { Spacing } from "@/app/components/ui/Spacing";
 
-import {
-  FileTextIcon,
-  ReaderIcon,
-  InputIcon,
-  BadgeIcon,
-} from "@radix-ui/react-icons";
+import { FileTextIcon, ReaderIcon, InputIcon } from "@radix-ui/react-icons";
+import { ControllerWithInput } from "./components/create-new-product-control-input";
 
 export default function CreateNewProductPage() {
   const {
-    register,
     control,
     handleSubmit,
+    watch,
     formState: { errors },
   } = useForm<CreateNewProductSchema>({
     resolver: zodResolver(createNewProductSchema),
-    mode: "all",
+    defaultValues: {
+      title: "",
+      description: "",
+      price: 1000,
+      discountPercentage: 0,
+      brand: "Samsung",
+    },
   });
+  console.log(watch());
+
+  console.log("Form errors:", errors);
 
   const onSubmit = (data: CreateNewProductSchema) => {
     console.log("Submitted data:", data);
@@ -41,48 +46,42 @@ export default function CreateNewProductPage() {
         gap={"3"}
       >
         <Spacing size="2" />
-        <Input
-          size={"3"}
-          leftAddon={<FileTextIcon />}
-          aria-label="상품명"
+        <ControllerWithInput
+          control={control}
+          name="title"
+          label="상품명"
+          error={errors?.title?.message}
           placeholder="상품명을 입력해주세요."
-          {...register("title")}
-          bottomText={errors.title?.message}
-          error={Boolean(errors.title?.message)}
+          leftAddon={<FileTextIcon />}
         />
-        <Input
-          size={"3"}
-          leftAddon={<ReaderIcon />}
-          aria-label="상품 설명"
+
+        <ControllerWithInput
+          control={control}
+          name="description"
+          label="상품 설명"
+          error={errors?.description?.message}
           placeholder="상품 설명을 입력해주세요."
-          {...register("description")}
-          bottomText={errors.description?.message}
-          error={Boolean(errors.description?.message)}
+          leftAddon={<ReaderIcon />}
         />
-        <Input
-          size={"3"}
-          leftAddon={<InputIcon />}
-          aria-label="상품 가격"
+
+        <ControllerWithInput
+          control={control}
+          name="price"
+          type="number"
+          label="상품 가격"
+          error={errors?.price?.message}
           placeholder="상품 가격을 입력해주세요."
-          {...(register("price"),
-          {
-            valueAsNumber: true,
-          })}
-          type="number"
-          bottomText={errors.price?.message}
-          error={Boolean(errors.price?.message)}
+          leftAddon={<InputIcon />}
         />
-        <Input
-          size={"3"}
-          leftAddon={<BadgeIcon />}
-          aria-label="상품 할인율"
-          placeholder="상품 할인율을 입력해주세요."
-          {...register("discountPercentage", {
-            valueAsNumber: true,
-          })}
+
+        <ControllerWithInput
+          control={control}
           type="number"
-          bottomText={errors.discountPercentage?.message}
-          error={Boolean(errors.discountPercentage?.message)}
+          label="상품 할인율"
+          name="discountPercentage"
+          error={errors?.discountPercentage?.message}
+          placeholder="상품 할인율을 입력해주세요."
+          leftAddon={<InputIcon />}
         />
 
         <Controller

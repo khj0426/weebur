@@ -20,7 +20,9 @@ export const createNewProductSchema = z.object({
       message: "1000원 이상으로 입력해주세요.",
     }),
   discountPercentage: z
-    .number()
+    .number({
+      message: "할인율을 입력해주세요.",
+    })
     .max(100, {
       message: "할인율은 최대 100%까지 가능합니다.",
     })
