@@ -3,6 +3,8 @@ import { ProductItem } from "../models/server";
 import Image from "next/image";
 import React from "react";
 import { SwitchCase } from "@/app/components/switch-case";
+import { PersonIcon } from "@radix-ui/react-icons";
+import { StarIcon } from "@radix-ui/react-icons";
 
 export function ProductCard({
   title,
@@ -33,7 +35,7 @@ export function ProductCard({
             value={thumbnail ? "썸네일_존재" : "썸네일_없음"}
             caseBy={{
               썸네일_존재: (
-                <div className="relative w-full h-[180px] bg-[var(--gray-5)] overflow-hidden">
+                <div className="relative w-full h-[180px] bg-[var(--gray-3)] overflow-hidden">
                   <Image alt={title} src={thumbnail} fill objectFit="cover" />
                   {isOutOfStock && (
                     <Flex
@@ -105,9 +107,21 @@ export function ProductCard({
             </Text>
           </Flex>
 
-          <Text as="div" size="1" mt="2" color="gray" weight={"bold"}>
-            평점: <Strong>{rating?.toFixed(1)}</Strong> ({reviews.length}개의
-            리뷰)
+          <Text
+            as="div"
+            size="1"
+            mt="2"
+            color="gray"
+            weight={"bold"}
+            className="flex items-center gap-1"
+          >
+            <div className="flex items-center gap-1">
+              <StarIcon />
+              평점: <Strong>{rating?.toFixed(1)}</Strong>
+            </div>
+            <div className="flex items-center gap-1">
+              <PersonIcon />({reviews.length}개의 리뷰)
+            </div>
           </Text>
         </Flex>
       </Card>
