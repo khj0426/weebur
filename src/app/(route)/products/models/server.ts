@@ -1,4 +1,4 @@
-import { DataWithPagination } from "@/app/server";
+import { Pagination } from "@/app/server";
 
 interface Dimensions {
   width: number;
@@ -46,7 +46,9 @@ interface Product {
   thumbnail: string;
 }
 
-export type ProductListResponse = DataWithPagination<Array<Product>>;
+export type ProductListResponse = Pagination & {
+  products: Product[];
+};
 export type ProductItem = Product;
 
 export const DEFAULT_PRODUCT_PAGINATION_SIZE = 20;

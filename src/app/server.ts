@@ -1,5 +1,4 @@
-export interface DataWithPagination<T> {
-  data: T[];
+export interface Pagination {
   total?: number;
   skip?: number;
   limit?: number;

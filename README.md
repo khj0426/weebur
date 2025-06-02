@@ -81,3 +81,26 @@ export function ControllerWithInput({
   );
 }
 ```
+
+#### Next Image 관련 오류 해결
+
+Next Image를 쓸 때 어떤 도메인(호스트)의 이미지를 불러올 수 있는지 next.config.js 파일에 명시적으로 설정해주어야 합니다.
+따라서 다음과 같이 이미지를 사용할 수 있도록 config에 추가해두었습니다.
+
+```js
+/** @type {import('next').NextConfig} */
+const nextConfig = {
+  images: {
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: process.env.NEXT_PUBLIC_CDN_IMAGE_HOST_NAME,
+        port: "",
+        pathname: "/product-images/**",
+      },
+    ],
+  },
+};
+
+export default nextConfig;
+```
