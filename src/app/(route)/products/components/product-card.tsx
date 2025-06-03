@@ -159,6 +159,7 @@ export function ProductCard(
       <Box
         minWidth={{ initial: "240px", sm: "200px" }}
         maxWidth={props.maxWidth ?? "300px"}
+        className="cursor-pointer"
       >
         <Card size="2">{props.children}</Card>
       </Box>
