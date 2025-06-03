@@ -1,43 +1,56 @@
 "use client";
 import { AsyncBoundary } from "@/app/components/async-boundary";
 import { Result } from "@/app/components/ui/Result";
-import { Spinner } from "@/app/components/ui/Spinner";
+
 import { useSuspenseProductList } from "./hooks/use-suspense-product-list";
 import { ProductCard } from "./components/product-card";
 import { useProductViewModeQueryParams } from "./hooks/use-product-view-mode-query-params";
 import { Box, DataList, Flex, Grid } from "@radix-ui/themes";
 import { SwitchCase } from "@/app/components/switch-case";
 import { ProductItem } from "./models/server";
+import { useEventTimeout } from "@/app/hooks/use-event-timer";
+import { getRandomProductMode } from "./utils/random-product-mode";
+import { ClientGate } from "@/app/components/client-gate";
+import { SkeletonCardList } from "./components/skeleton-card-list";
 
 export default function ProductPage() {
+  const { productViewMode, setProductViewMode } =
+    useProductViewModeQueryParams();
+
+  useEventTimeout({
+    callback: () => setProductViewMode(getRandomProductMode()),
+    events: [""],
+    timeOut: 24 * 60 * 60 * 1000,
+  });
+
   return (
-    <AsyncBoundary
-      fallback={<Spinner />}
-      errorFallback={({ error }) => (
-        <Result type="error" height={350} width={500}>
-          {error?.message ?? "서버 오류가 발생했습니다. 잠시 뒤 시도해주세요."}
-        </Result>
-      )}
-    >
-      <Resolved />
-    </AsyncBoundary>
+    <ClientGate>
+      <AsyncBoundary
+        fallback={<SkeletonCardList productListMode={productViewMode} />}
+        errorFallback={({ error }) => (
+          <Result type="error" height={350} width={500}>
+            {error?.message ??
+              "서버 오류가 발생했습니다. 잠시 뒤 시도해주세요."}
+          </Result>
+        )}
+      >
+        <Resolved productViewMode={productViewMode} />
+      </AsyncBoundary>
+    </ClientGate>
   );
 }
 
-function Resolved() {
+function Resolved({ productViewMode }: { productViewMode: "grid" | "list" }) {
   const { data: allProducts } = useSuspenseProductList();
-  const { productViewMode } = useProductViewModeQueryParams();
 
   return (
-    <div>
-      <SwitchCase
-        value={productViewMode}
-        caseBy={{
-          list: <ProductCardViewList products={allProducts.products} />,
-          grid: <ProductCardViewGrid products={allProducts.products} />,
-        }}
-      />
-    </div>
+    <SwitchCase
+      value={productViewMode}
+      caseBy={{
+        list: <ProductCardViewList products={allProducts.products} />,
+        grid: <ProductCardViewGrid products={allProducts.products} />,
+      }}
+    />
   );
 }
 
