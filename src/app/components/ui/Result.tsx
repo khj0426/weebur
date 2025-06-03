@@ -35,7 +35,7 @@ export function Result({
         height,
       }}
       color={getResultColorViaType(type)}
-      size="2"
+      size="3"
     >
       <Callout.Icon>
         <InfoCircledIcon />
