@@ -5,13 +5,14 @@ import { Result } from "@/app/components/ui/Result";
 import { useSuspenseProductList } from "./hooks/use-suspense-product-list";
 import { ProductCard } from "./components/product-card";
 import { useProductViewModeQueryParams } from "./hooks/use-product-view-mode-query-params";
-import { Box, DataList, Flex, Grid } from "@radix-ui/themes";
+import { Box, Button, DataList, Flex, Grid } from "@radix-ui/themes";
 import { SwitchCase } from "@/app/components/switch-case";
 import { ProductItem } from "./models/server";
 import { useEventTimeout } from "@/app/hooks/use-event-timer";
 import { getRandomProductMode } from "./utils/random-product-mode";
 import { ClientGate } from "@/app/components/client-gate";
 import { SkeletonCardList } from "./components/skeleton-card-list";
+import Link from "next/link";
 
 export default function ProductPage() {
   const { productViewMode, setProductViewMode } =
@@ -34,6 +35,11 @@ export default function ProductPage() {
           </Result>
         )}
       >
+        <div className="my-2">
+          <Button color="gray" variant="outline" size={"3"}>
+            <Link href={"/products/new"}>상품 생성하러 가기</Link>
+          </Button>
+        </div>
         <Resolved productViewMode={productViewMode} />
       </AsyncBoundary>
     </ClientGate>
@@ -80,7 +86,7 @@ function ProductCardViewList({ products }: { products: ProductItem[] }) {
     >
       {products.map((product) => (
         <DataList.Item key={product.id}>
-          <ProductCard {...product} maxWidth={"700px"}>
+          <ProductCard {...product} maxWidth={"100%"}>
             <Flex gap="3" align="center">
               <Box
                 style={{

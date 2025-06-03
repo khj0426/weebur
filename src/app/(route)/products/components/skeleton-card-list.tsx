@@ -7,13 +7,16 @@ interface Props {
 
 export function SkeletonCardList({ productListMode }: Props) {
   return (
-    <SwitchCase
-      value={productListMode}
-      caseBy={{
-        grid: <GridSkeleton />,
-        list: <ListSktletion />,
-      }}
-    />
+    <div>
+      <Skeleton width={"150px"} height={"40px"} className="my-2" />
+      <SwitchCase
+        value={productListMode}
+        caseBy={{
+          grid: <GridSkeleton />,
+          list: <ListSktletion />,
+        }}
+      />
+    </div>
   );
 }
 
@@ -31,7 +34,7 @@ function ListSktletion() {
   return (
     <Box width={"100"} className="flex gap-3 flex-col">
       {Array.from({ length: 20 }).map((_, index) => (
-        <Skeleton width={"700px"} height={"210px"} key={index} />
+        <Skeleton width={"100%"} height={"210px"} key={index} />
       ))}
     </Box>
   );
