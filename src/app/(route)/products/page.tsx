@@ -32,7 +32,7 @@ export default function ProductPage() {
       <AsyncBoundary
         fallback={<SkeletonCardList productListMode={productViewMode} />}
         errorFallback={({ error }) => (
-          <Result type="error" height={350} width={500}>
+          <Result type="error">
             {error?.message ??
               "서버 오류가 발생했습니다. 잠시 뒤 시도해주세요."}
           </Result>

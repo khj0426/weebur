@@ -55,11 +55,7 @@ export default function CreateNewProductPage() {
   const onSubmit = (data: CreateNewProductSchema) => {
     createNewProduct(data, {
       onSuccess: () => {
-        alert("상품 정보가 성공적으로 저장되었습니다.");
         router.push("/products");
-      },
-      onError: (error) => {
-        alert(error.message);
       },
     });
   };
