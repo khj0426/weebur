@@ -4,25 +4,31 @@ import { Result } from "@/app/components/ui/Result";
 
 import { useSuspenseProductList } from "./hooks/use-suspense-product-list";
 import { ProductCard } from "./components/product-card";
-import { useProductViewModeQueryParams } from "./hooks/use-product-view-mode-query-params";
+import { useProductViewModeQueryParams } from "./hooks/use-product-view-mode";
 import { Box, Button, DataList, Flex, Grid } from "@radix-ui/themes";
 import { SwitchCase } from "@/app/components/switch-case";
 import { ProductItem } from "./models/server";
-import { useEventTimeout } from "@/app/hooks/use-event-timer";
+
 import { getRandomProductMode } from "./utils/random-product-mode";
 import { ClientGate } from "@/app/components/client-gate";
 import { SkeletonCardList } from "./components/skeleton-card-list";
 import Link from "next/link";
+import { useEffect } from "react";
 
 export default function ProductPage() {
-  const { productViewMode, setProductViewMode } =
+  const { productViewMode, isInvalidMode, setProductViewMode } =
     useProductViewModeQueryParams();
 
-  useEventTimeout({
-    callback: () => setProductViewMode(getRandomProductMode()),
-    events: [""],
-    timeOut: 24 * 60 * 60 * 1000,
-  });
+  useEffect(() => {
+    if (isInvalidMode === true) {
+      setProductViewMode(getRandomProductMode(), {
+        days: 1,
+        path: "/",
+        HttpOnly: true,
+        SameSite: "Lax",
+      });
+    }
+  }, [isInvalidMode, setProductViewMode]);
 
   return (
     <ClientGate>
