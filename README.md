@@ -13,13 +13,16 @@ npm install
 npm run dev
 ```
 
+<hr />
+
 #### 사용 기술
 
 - Next 14.2.25
 - 스타일링 : tailwindcss / radix-ui
-- 상태관리 : nuqs
 - 폼/유효성관리 : react-hook-form / zod
 - 서버 상태 관리 : tanstack-query
+
+<hr />
 
 #### 페이지 구조 설계
 
@@ -34,6 +37,8 @@ npm run dev
 컴포넌트의 분기처리는 `Switcase`컴포넌트를 사용합니다.
 
 useSuspenseQuery 등 suspense와 에러처리를 동시에 하기 위해 `AsyncBoundary`컴포넌트를 사용합니다.
+
+<hr />
 
 #### radix-ui의 TextField와 react-hook-form사용시 발생한 문제점
 
@@ -92,6 +97,8 @@ export function ControllerWithInput({
 }
 ```
 
+<hr />
+
 #### Next Image 관련 오류 해결
 
 Next Image를 쓸 때 어떤 도메인(호스트)의 이미지를 불러올 수 있는지 next.config.js 파일에 명시적으로 설정해주어야 합니다.
@@ -115,6 +122,8 @@ const nextConfig = {
 export default nextConfig;
 ```
 
+<hr />
+
 #### View 표시 조건
 
 주어진 요구사항을 고려하기 위해 단순 지역상태를 사용하는 것은 제약이 있다고 느꼈습니다. View표시조건 데이터는 24시간동안 유효해야 하고, 이를 단순 useState훅으로 관리하는 것은 적합하지 않다고 판단했습니다.
@@ -130,6 +139,8 @@ export default nextConfig;
 
 저는 이 두가지의 선택지 중에 쿠키를 선택했습니다. 로컬스토리지로 커스텀한 이벤트를 발생시키고, 감지하는 로직은 직접 타임스탬프를 저장하고 매번 시간을 계산해서 비교해야 하고, 로직이 복잡해지고 실수할 여지가 생긴다고 생각했습니다.
 쿠키를 사용하는 것이 더 간결하게 코드를 구성할 수 있다고 생각했고, 쿠키를 선택하게 되었습니다.
+
+<hr />
 
 #### 상품 카드 컴포넌트에 합성 컴포넌트 적용
 
@@ -152,4 +163,51 @@ export default nextConfig;
   <ProductCard.Price />
   <ProductCard.Rating />
 </ProductCard>
+```
+
+<hr />
+
+#### 더 나은 사용자 경험을 위한 스켈레톤 UI처리
+
+useSuspenseQuery훅을 사용해 로딩중일때, 각 View표시 조건에 맞는 스켈레톤을 띄워주었습니다. 로딩중일 때 레이아웃의 변화없이, 자연스럽게 스켈레톤이 뜨도록 설정하였습니다.
+
+```tsx
+interface Props {
+  productListMode: "list" | "grid";
+}
+
+export function SkeletonCardList({ productListMode }: Props) {
+  return (
+    <div>
+      <Skeleton width={"150px"} height={"40px"} className="my-2" />
+      <SwitchCase
+        value={productListMode}
+        caseBy={{
+          grid: <GridSkeleton />,
+          list: <ListSktletion />,
+        }}
+      />
+    </div>
+  );
+}
+
+function GridSkeleton() {
+  return (
+    <Grid columns={"4"} gap="4">
+      {Array.from({ length: 20 }).map((_, index) => (
+        <Skeleton width={"300px"} height={"380px"} key={index} />
+      ))}
+    </Grid>
+  );
+}
+
+function ListSktletion() {
+  return (
+    <Box width={"100"} className="flex gap-3 flex-col">
+      {Array.from({ length: 20 }).map((_, index) => (
+        <Skeleton width={"100%"} height={"210px"} key={index} />
+      ))}
+    </Box>
+  );
+}
 ```
