@@ -85,7 +85,7 @@ function Category() {
 function Description() {
   const { description } = useProductCard();
   return (
-    <Text as="p" size="2" color="gray" trim="both" className="line-clamp-3">
+    <Text as="p" size="2" color="gray" trim="both" className="line-clamp-2">
       {description}
     </Text>
   );
